@@ -1,10 +1,10 @@
 import ply.lex as lex
-import codecs
 
 # List Tokens
 tokens = (
-    'STARTTAG',  # <TABLE
-    'ENDTAG',  # TABLE>
+    'TAG',  # <XML
+    'START',  # <XML> <OTHER  </XML>
+    'END',  # <XML
     'ID',  # align
     'VALUE',  # "text"
     'EQUAL',  # =
@@ -14,30 +14,54 @@ tokens = (
     'GT',  # >
 )
 
+states = (
+    ('TAG', 'exclusive'),
+)
+
 # Ignored characters
 t_ignore = ' \t'
 
 # Tokens
-t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
-t_EQUAL = r'='
+t_TAG_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
+t_TAG_EQUAL = r'='
 # t_LTS = r'</'
 # t_LT = r'<'
-t_GTS = r'/>'
-t_GT = r'>'
+t_TAG_GTS = r'/>'
+t_TAG_GT = r'>'
+t_TAG_ignore = " \t\n"
 
 
-def t_STARTTAG(t):
+def t_TAG(t):
     r'<[a-zA-Z_][a-zA-Z0-9_]*'
     t.value = t.value[1:]
+    t.lexer.code_start = t.lexer.lexpos
+    t.lexer.level = 1
+    t.lexer.begin('TAG')
     return t
 
 
-def t_ENDTAG(t):
+def t_TAG_START(t):
+    r'<[a-zA-Z_][a-zA-Z0-9_]*'
+    t.value = t.value[1:]
+    t.lexer.level += 1
+    return t
+
+
+def t_TAG_END(t):
     r'</[a-zA-Z_][a-zA-Z0-9_]*>'
+    t.value = t.value[2:-1]
+    t.lexer.level -= 1
+    # Closing Condition
+    if t.lexer.level == 0:
+        t.lexer.begin('INITIAL')
     return t
 
 
-def t_VALUE(t):
+def t_TAG_error(t):
+    t.lexer.skip(1)
+
+
+def t_TAG_VALUE(t):
     r'"[^"]*"'
     t.value = t.value[1:-1]  # dropping off the double quotes
     return t
@@ -54,20 +78,3 @@ def t_error(t):
 
 
 analyzer = lex.lex()
-"""
-# Test
-test = '/home/mackey/PycharmProjects/simpleXML/test/test1.xml'
-fp = codecs.open(test, 'r', 'utf-8')
-read = fp.read()
-fp.close()
-
-# My Analyzer Lexical
-analyzer = lex.lex()
-analyzer.input(read)
-
-while True:
-    token = analyzer.token()
-    if not token:
-        break
-    print(token)
-"""
