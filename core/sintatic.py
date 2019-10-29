@@ -27,7 +27,7 @@ def log_get(p):
 def p_xml(p):
     #  p[0    p[1]    p[2]   p[3]     p[4]
     '''xml : opentag words children closetag
-           | alonetag'''
+           | alonetag words'''
     if len(p) == 5:
         p[0] = {p[4]: p[1]}
         if p[3] is not None:

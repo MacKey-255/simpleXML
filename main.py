@@ -5,7 +5,7 @@ from core.sintatic import parser, names, alternative_error
 
 def main():
     # Test
-    test = '/home/mackey/PycharmProjects/simpleXML/test1.xml'
+    test = '/home/mackey/PycharmProjects/simpleXML/test/error.xml'
     fp = codecs.open(test, 'r', 'utf-8')
     read = fp.read()
     fp.close()
@@ -17,13 +17,14 @@ def main():
         token = analyzer.token()
         if not token:
             break
-        #print(token)
+        # print(token)
 
     result = parser.parse(read, tracking=True)
     alternative_error()
-    print('RESULT', result)
-    print('LINE', len(read[:44].split('\n')))
-    print(names)
+    print(result)
+    print('RESULT', 'OK' if result else 'ERROR')
+    # print('LINE', len(read[:44].split('\n')))
+    # print(names)
 
 
 if __name__ == '__main__':
