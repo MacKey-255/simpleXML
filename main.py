@@ -1,6 +1,6 @@
 import codecs
 from core.lexer import analyzer
-from core.sintatic import parser, names
+from core.sintatic import parser, names, alternative_error
 
 
 def main():
@@ -17,10 +17,12 @@ def main():
         token = analyzer.token()
         if not token:
             break
-        print(token)
+        #print(token)
 
-    result = parser.parse(read,tracking=True)
+    result = parser.parse(read, tracking=True)
+    alternative_error()
     print('RESULT', result)
+    print('LINE', len(read[:44].split('\n')))
     print(names)
 
 

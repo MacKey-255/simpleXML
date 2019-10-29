@@ -2,16 +2,15 @@ import ply.lex as lex
 
 # List Tokens
 tokens = (
-    'TAG',  # <XML
-    'START',  # <XML> <OTHER  </XML>
-    'END',  # <XML
-    'ID',  # align
-    'VALUE',  # "text"
-    'EQUAL',  # =
-    # 'LT',  # <
-    # 'LTS',  # </
-    'GTS',  # />
-    'GT',  # >
+    'TAG',
+    'START',
+    'END',
+    'ID',
+    'WORDS',
+    'VALUE',
+    'EQUAL',
+    'GTS',
+    'GT',
 )
 
 states = (
@@ -19,13 +18,12 @@ states = (
 )
 
 # Ignored characters
-t_ignore = ' \t'
+t_ignore = ' \t\n'
 
 # Tokens
+t_WORDS = r'[a-zA-Z_][a-zA-Z0-9_]*'
 t_TAG_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 t_TAG_EQUAL = r'='
-# t_LTS = r'</'
-# t_LT = r'<'
 t_TAG_GTS = r'/>'
 t_TAG_GT = r'>'
 t_TAG_ignore = " \t\n"
@@ -34,6 +32,7 @@ t_TAG_ignore = " \t\n"
 def t_TAG(t):
     r'<[a-zA-Z_][a-zA-Z0-9_]*'
     t.value = t.value[1:]
+    t.type = 'START'
     t.lexer.code_start = t.lexer.lexpos
     t.lexer.level = 1
     t.lexer.begin('TAG')

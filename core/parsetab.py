@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'END EQUAL GT GTS ID START TAG VALUEprogram : TAG declare GT words more END\n               | TAG declare GTSxml : START declare GT words more END\n           | START declare GTSdeclare : ID EQUAL VALUE declare\n               | emptymore : xml more\n            | emptywords : ID words\n             | emptyempty :'
+_lr_signature = 'END EQUAL GT GTS ID START TAG VALUE WORDSxml : opentag words children closetag\n           | alonetagopentag : START attributes GTclosetag : ENDalonetag : START attributes GTSattributes : ID EQUAL VALUE attributes\n               | emptychildren : xml children\n            | emptywords : ID words\n             | emptyempty :'
     
-_lr_action_items = {'TAG':([0,],[2,]),'$end':([1,7,19,],[0,-2,-1,]),'ID':([2,6,10,12,16,22,],[4,10,10,4,4,10,]),'GT':([2,3,5,12,16,18,21,],[-11,6,-6,-11,-11,-5,22,]),'GTS':([2,3,5,12,16,18,21,],[-11,7,-6,-11,-11,-5,23,]),'EQUAL':([4,],[8,]),'START':([6,9,10,11,14,17,22,23,24,26,],[-11,16,-11,-10,16,-9,-11,-4,16,-3,]),'END':([6,9,10,11,13,14,15,17,20,22,23,24,25,26,],[-11,-11,-11,-10,19,-11,-8,-9,-7,-11,-4,-11,26,-3,]),'VALUE':([8,],[12,]),}
+_lr_action_items = {'START':([0,2,3,5,6,7,12,14,15,16,18,19,],[4,-12,-2,4,-12,-11,4,-10,-3,-5,-1,-4,]),'$end':([1,3,16,18,19,],[0,-2,-5,-1,-4,]),'ID':([2,4,6,15,21,],[6,9,6,-3,9,]),'END':([2,3,5,6,7,11,12,13,14,15,16,18,19,20,],[-12,-2,-12,-12,-11,19,-12,-9,-10,-3,-5,-1,-4,-8,]),'GT':([4,8,10,21,22,],[-12,15,-7,-12,-6,]),'GTS':([4,8,10,21,22,],[-12,16,-7,-12,-6,]),'EQUAL':([9,],[17,]),'VALUE':([17,],[21,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'declare':([2,12,16,],[3,18,21,]),'empty':([2,6,9,10,12,14,16,22,24,],[5,11,15,11,5,15,5,11,15,]),'words':([6,10,22,],[9,17,24,]),'more':([9,14,24,],[13,20,25,]),'xml':([9,14,24,],[14,14,14,]),}
+_lr_goto_items = {'xml':([0,5,12,],[1,12,12,]),'opentag':([0,5,12,],[2,2,2,]),'alonetag':([0,5,12,],[3,3,3,]),'words':([2,6,],[5,14,]),'empty':([2,4,5,6,12,21,],[7,10,13,7,13,10,]),'attributes':([4,21,],[8,22,]),'children':([5,12,],[11,20,]),'closetag':([11,],[18,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,16 +26,17 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> program","S'",1,None,None,None),
-  ('program -> TAG declare GT words more END','program',6,'p_program','sintatic.py',22),
-  ('program -> TAG declare GTS','program',3,'p_program','sintatic.py',23),
-  ('xml -> START declare GT words more END','xml',6,'p_xml','sintatic.py',39),
-  ('xml -> START declare GTS','xml',3,'p_xml','sintatic.py',40),
-  ('declare -> ID EQUAL VALUE declare','declare',4,'p_declare','sintatic.py',45),
-  ('declare -> empty','declare',1,'p_declare','sintatic.py',46),
-  ('more -> xml more','more',2,'p_more','sintatic.py',54),
-  ('more -> empty','more',1,'p_more','sintatic.py',55),
-  ('words -> ID words','words',2,'p_words','sintatic.py',60),
-  ('words -> empty','words',1,'p_words','sintatic.py',61),
-  ('empty -> <empty>','empty',0,'p_empty','sintatic.py',68),
+  ("S' -> xml","S'",1,None,None,None),
+  ('xml -> opentag words children closetag','xml',4,'p_xml','sintatic.py',25),
+  ('xml -> alonetag','xml',1,'p_xml','sintatic.py',26),
+  ('opentag -> START attributes GT','opentag',3,'p_opentag','sintatic.py',32),
+  ('closetag -> END','closetag',1,'p_closetag','sintatic.py',37),
+  ('alonetag -> START attributes GTS','alonetag',3,'p_alonetag','sintatic.py',46),
+  ('attributes -> ID EQUAL VALUE attributes','attributes',4,'p_attributes','sintatic.py',50),
+  ('attributes -> empty','attributes',1,'p_attributes','sintatic.py',51),
+  ('children -> xml children','children',2,'p_children','sintatic.py',59),
+  ('children -> empty','children',1,'p_children','sintatic.py',60),
+  ('words -> ID words','words',2,'p_words','sintatic.py',65),
+  ('words -> empty','words',1,'p_words','sintatic.py',66),
+  ('empty -> <empty>','empty',0,'p_empty','sintatic.py',71),
 ]
