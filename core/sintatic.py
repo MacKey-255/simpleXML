@@ -106,7 +106,7 @@ def p_empty(p):
 def p_error(p):
     if p:
         if p.type == 'START':
-            print("Syntax error at starting ", p.value, 'because', [o for o in start_tag_stack[0]][0], 'is the problem')
+            print("Syntax error at starting <{0}> because </{1}> is the problem".format([o for o in start_tag_stack[0]][0], [o for o in end_tag_stack[0]][0]))
         else:
             print("Syntax error at token", p.type)
             print("Syntax error at '%s'" % p.value)
@@ -115,12 +115,16 @@ def p_error(p):
 
 
 def alternative_error():
+    error = False
     if start_tag_stack:
         for tag in start_tag_stack:
-            print("Syntax error at starting ", [o for o in tag][0])
+            print("Syntax error at starting <{0}>".format([o for o in tag][0]))
+        error = True
     if end_tag_stack:
         for tag in end_tag_stack:
-            print("Syntax error at closing ", [o for o in tag][0])
+            print("Syntax error at closing </{0}>".format([o for o in tag][0]))
+        error = True
+    return error
 
 
 parser = yacc.yacc()

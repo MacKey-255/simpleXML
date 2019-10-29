@@ -1,6 +1,6 @@
 import codecs
 from core.lexer import analyzer
-from core.sintatic import parser, names, alternative_error
+from core.sintatic import parser, alternative_error
 
 
 def main():
@@ -20,9 +20,8 @@ def main():
         # print(token)
 
     result = parser.parse(read, tracking=True)
-    alternative_error()
-    print(result)
-    print('RESULT', 'OK' if result else 'ERROR')
+    error = alternative_error()
+    print('RESULT', 'OK' if result is not None and not error else 'CODE ERROR')
     # print('LINE', len(read[:44].split('\n')))
     # print(names)
 
