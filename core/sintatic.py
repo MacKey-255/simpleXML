@@ -1,6 +1,4 @@
 from ply import yacc
-
-from core.exceptions import TagError
 from core.lexer import tokens
 
 # Precedence rules for the arithmetic operators
@@ -12,6 +10,9 @@ names = {}
 # Stack of the Tags
 start_tag_stack = []
 end_tag_stack = []
+
+# Stack Error
+errors = []
 
 
 def log_get(p):
@@ -45,15 +46,17 @@ def p_opentag(p):
     # Tag Start
     start_tag_stack.append({p[1]: p.lexpos(1)})
     p[0] = p[2]
+    # print('ADD', p[1])
 
 
 def p_closetag(p):
     '''closetag : END'''
     n = start_tag_stack.pop()
     p[0] = p[1]
-    #print('-------------------')
-    #print('CLOSE', p[1], n)
+    # print('CLOSE', p[1], n)
+    # print('-------------------')
     if not p[1] in n:
+        # print('ERROR', p[1], n)
         # Add actual closetag
         start_tag_stack.append(n)
         # Search start_tag for close_tag
@@ -67,12 +70,13 @@ def p_closetag(p):
         if not correct:
             # Add Tag Close
             end_tag_stack.append({p[1]: p.lexpos(1)})
-    #print('TAGS_START', start_tag_stack)
-    #print('TAGS_END', end_tag_stack)
+    # print('TAGS_START', start_tag_stack)
+    # print('TAGS_END', end_tag_stack)
 
 
 def p_alonetag(p):
     '''alonetag : START attributes GTS'''
+    # print('ALONE', p[1])
     p[0] = {p[1]: p[2]}
     names[p[1]] = p[2]
 
@@ -106,24 +110,37 @@ def p_empty(p):
 def p_error(p):
     if p:
         if p.type == 'START':
-            print("Syntax error at starting <{0}> because </{1}> is the problem".format([o for o in start_tag_stack[0]][0], [o for o in end_tag_stack[0]][0]))
+            for k in start_tag_stack:
+                if p.value in [o for o in k]:
+                    # print(start_tag_stack, k, p.value)
+                    errors.append([p.lexpos, "Start tag has wrong close tag </{0}>".format(p.value)])
+                    break
+        elif p.type == 'ID':
+            errors.append([p.lexpos, "Unexpected token '{0}'".format(p.value)])
+        elif p.type == 'END':
+            errors.append([p.lexpos, "Wrong closing <{0}>".format(p.value)])
         else:
-            print("Syntax error at token", p.type)
-            print("Syntax error at '%s'" % p.value)
-            print("line : '%s'" % p.lineno)
-            print("column: '%s'" % p.lexpos)
+            errors.append([p.lexpos, "Syntax Error at {0} with token: '{1}'".format(p.value, p.type)])
+            # print("Syntax error at token", p.type)
+            # print("Syntax error at '%s'" % p.value)
+            # print("line : '%s'" % p.lineno)
+            # print("column: '%s'" % p.lexpos)
 
 
-def alternative_error():
-    error = False
+def alternative_error(error=None):
+    # print(start_tag_stack, end_tag_stack)
+    if error is None:
+        error = errors
+    # Extract Error
     if start_tag_stack:
         for tag in start_tag_stack:
-            print("Syntax error at starting <{0}>".format([o for o in tag][0]))
-        error = True
+            error.append([tag[[o for o in tag][0]], "Syntax error at starting <{0}>".format([o for o in tag][0])])
     if end_tag_stack:
         for tag in end_tag_stack:
-            print("Syntax error at closing </{0}>".format([o for o in tag][0]))
-        error = True
+            error.append([tag[[o for o in tag][0]], "Syntax error at closing </{0}>".format([o for o in tag][0])])
+    # Clear old End and Start Tag Stack
+    end_tag_stack.clear()
+    start_tag_stack.clear()
     return error
 
 

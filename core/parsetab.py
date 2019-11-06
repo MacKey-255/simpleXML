@@ -8,7 +8,7 @@ _lr_method = 'LALR'
 
 _lr_signature = 'END EQUAL GT GTS ID START TAG VALUE WORDSxml : opentag words children closetag\n           | alonetag wordsopentag : START attributes GTclosetag : ENDalonetag : START attributes GTSattributes : ID EQUAL VALUE attributes\n               | emptychildren : xml children\n            | emptywords : ID words\n             | emptyempty :'
     
-_lr_action_items = {'START':([0,2,3,5,6,7,8,13,15,16,17,19,20,],[4,-12,-12,4,-12,-11,-2,4,-10,-3,-5,-1,-4,]),'$end':([1,3,6,7,8,15,17,19,20,],[0,-12,-12,-11,-2,-10,-5,-1,-4,]),'ID':([2,3,4,6,16,17,22,],[6,6,10,6,-3,-5,10,]),'END':([2,3,5,6,7,8,12,13,14,15,16,17,19,20,21,],[-12,-12,-12,-12,-11,-2,20,-12,-9,-10,-3,-5,-1,-4,-8,]),'GT':([4,9,11,22,23,],[-12,16,-7,-12,-6,]),'GTS':([4,9,11,22,23,],[-12,17,-7,-12,-6,]),'EQUAL':([10,],[18,]),'VALUE':([18,],[22,]),}
+_lr_action_items = {'VALUE':([15,],[19,]),'$end':([1,4,5,6,7,12,13,20,21,],[-12,0,-2,-11,-12,-10,-5,-4,-1,]),'GT':([2,8,9,19,23,],[-12,-7,14,-12,-6,]),'START':([0,1,3,5,6,7,11,12,13,14,18,20,21,],[2,-12,-12,-2,-11,-12,2,-10,-5,-3,2,-4,-1,]),'EQUAL':([10,],[15,]),'END':([1,3,5,6,7,11,12,13,14,16,17,18,20,21,22,],[-12,-12,-2,-11,-12,-12,-10,-5,-3,-9,20,-12,-4,-1,-8,]),'ID':([1,2,3,7,13,14,19,],[7,10,7,7,-5,-3,10,]),'GTS':([2,8,9,19,23,],[-12,-7,13,-12,-6,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'xml':([0,5,13,],[1,13,13,]),'opentag':([0,5,13,],[2,2,2,]),'alonetag':([0,5,13,],[3,3,3,]),'words':([2,3,6,],[5,8,15,]),'empty':([2,3,4,5,6,13,22,],[7,7,11,14,7,14,11,]),'attributes':([4,22,],[9,23,]),'children':([5,13,],[12,21,]),'closetag':([12,],[19,]),}
+_lr_goto_items = {'alonetag':([0,11,18,],[1,1,1,]),'empty':([1,2,3,7,11,18,19,],[6,8,6,6,16,16,8,]),'children':([11,18,],[17,22,]),'opentag':([0,11,18,],[3,3,3,]),'words':([1,3,7,],[5,11,12,]),'attributes':([2,19,],[9,23,]),'xml':([0,11,18,],[4,18,18,]),'closetag':([17,],[21,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,16 +27,16 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> xml","S'",1,None,None,None),
-  ('xml -> opentag words children closetag','xml',4,'p_xml','sintatic.py',28),
-  ('xml -> alonetag words','xml',2,'p_xml','sintatic.py',29),
-  ('opentag -> START attributes GT','opentag',3,'p_opentag','sintatic.py',44),
-  ('closetag -> END','closetag',1,'p_closetag','sintatic.py',51),
-  ('alonetag -> START attributes GTS','alonetag',3,'p_alonetag','sintatic.py',75),
-  ('attributes -> ID EQUAL VALUE attributes','attributes',4,'p_attributes','sintatic.py',81),
-  ('attributes -> empty','attributes',1,'p_attributes','sintatic.py',82),
-  ('children -> xml children','children',2,'p_children','sintatic.py',90),
-  ('children -> empty','children',1,'p_children','sintatic.py',91),
-  ('words -> ID words','words',2,'p_words','sintatic.py',96),
-  ('words -> empty','words',1,'p_words','sintatic.py',97),
-  ('empty -> <empty>','empty',0,'p_empty','sintatic.py',102),
+  ('xml -> opentag words children closetag','xml',4,'p_xml','sintatic.py',29),
+  ('xml -> alonetag words','xml',2,'p_xml','sintatic.py',30),
+  ('opentag -> START attributes GT','opentag',3,'p_opentag','sintatic.py',45),
+  ('closetag -> END','closetag',1,'p_closetag','sintatic.py',53),
+  ('alonetag -> START attributes GTS','alonetag',3,'p_alonetag','sintatic.py',78),
+  ('attributes -> ID EQUAL VALUE attributes','attributes',4,'p_attributes','sintatic.py',85),
+  ('attributes -> empty','attributes',1,'p_attributes','sintatic.py',86),
+  ('children -> xml children','children',2,'p_children','sintatic.py',94),
+  ('children -> empty','children',1,'p_children','sintatic.py',95),
+  ('words -> ID words','words',2,'p_words','sintatic.py',100),
+  ('words -> empty','words',1,'p_words','sintatic.py',101),
+  ('empty -> <empty>','empty',0,'p_empty','sintatic.py',106),
 ]

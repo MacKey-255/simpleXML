@@ -1,0 +1,61 @@
+#:kivy 1.0
+
+FloatLayout:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 5
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 0.7
+            Label:
+                text: 'Codigo Fuente:'
+                size_hint: 0, None
+                height: 20
+            CodeInput:
+                id: text_input
+                text: ''
+                size_hint: 1, 0.9
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 0.3
+            Label:
+                text: 'Errores:'
+                size_hint: 0.07, None
+                height: 20
+            RstDocument:
+                id: error_output
+                text: ''
+                size_hint: 1, 0.8
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 0.4, None
+            spacing: 5
+            height: 30
+            Button:
+                text: 'Compilar'
+                on_release: app.compile()
+            Button:
+                text: 'Cargar XML'
+                on_release: app.show_load()
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancelar"
+                on_release: root.cancel()
+
+            Button:
+                text: "Cargar"
+                on_release: app.load(filechooser.path, filechooser.selection)
