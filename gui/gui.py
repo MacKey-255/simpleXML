@@ -1,6 +1,7 @@
 import os
 
 from kivy.app import App
+from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
@@ -16,8 +17,8 @@ class LoadDialog(FloatLayout):
 
 class MainApp(App):
     title = 'Parser Simple XML'
-    icon = '/home/mackey/PycharmProjects/simpleXML/gui/icon.png'
-    kv_file = 'gui/main.kv'
+    icon = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'icon.png')
+    kv_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'main.kv')
     errors = []
 
     @staticmethod

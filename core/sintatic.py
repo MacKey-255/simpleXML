@@ -28,6 +28,7 @@ def log_get(p):
 def p_xml(p):
     #  p[0    p[1]    p[2]   p[3]     p[4]
     '''xml : opentag words children closetag
+           | opentag children words closetag
            | alonetag words'''
     if len(p) == 5:
         p[0] = {p[4]: p[1]}
@@ -46,17 +47,13 @@ def p_opentag(p):
     # Tag Start
     start_tag_stack.append({p[1]: p.lexpos(1)})
     p[0] = p[2]
-    # print('ADD', p[1])
 
 
 def p_closetag(p):
     '''closetag : END'''
     n = start_tag_stack.pop()
     p[0] = p[1]
-    # print('CLOSE', p[1], n)
-    # print('-------------------')
     if not p[1] in n:
-        # print('ERROR', p[1], n)
         # Add actual closetag
         start_tag_stack.append(n)
         # Search start_tag for close_tag
@@ -70,13 +67,10 @@ def p_closetag(p):
         if not correct:
             # Add Tag Close
             end_tag_stack.append({p[1]: p.lexpos(1)})
-    # print('TAGS_START', start_tag_stack)
-    # print('TAGS_END', end_tag_stack)
 
 
 def p_alonetag(p):
     '''alonetag : START attributes GTS'''
-    # print('ALONE', p[1])
     p[0] = {p[1]: p[2]}
     names[p[1]] = p[2]
 
@@ -112,7 +106,6 @@ def p_error(p):
         if p.type == 'START':
             for k in start_tag_stack:
                 if p.value in [o for o in k]:
-                    # print(start_tag_stack, k, p.value)
                     errors.append([p.lexpos, "Start tag has wrong close tag </{0}>".format(p.value)])
                     break
         elif p.type == 'ID':
@@ -121,17 +114,13 @@ def p_error(p):
             errors.append([p.lexpos, "Wrong closing <{0}>".format(p.value)])
         else:
             errors.append([p.lexpos, "Syntax Error at {0} with token: '{1}'".format(p.value, p.type)])
-            # print("Syntax error at token", p.type)
-            # print("Syntax error at '%s'" % p.value)
-            # print("line : '%s'" % p.lineno)
-            # print("column: '%s'" % p.lexpos)
 
 
 def alternative_error(error=None):
-    # print(start_tag_stack, end_tag_stack)
     if error is None:
         error = errors
     # Extract Error
+    print(start_tag_stack, end_tag_stack)
     if start_tag_stack:
         for tag in start_tag_stack:
             error.append([tag[[o for o in tag][0]], "Syntax error at starting <{0}>".format([o for o in tag][0])])

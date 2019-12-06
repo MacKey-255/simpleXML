@@ -9,41 +9,42 @@ Grammar
 
 Rule 0     S' -> xml
 Rule 1     xml -> opentag words children closetag
-Rule 2     xml -> alonetag words
-Rule 3     opentag -> START attributes GT
-Rule 4     closetag -> END
-Rule 5     alonetag -> START attributes GTS
-Rule 6     attributes -> ID EQUAL VALUE attributes
-Rule 7     attributes -> empty
-Rule 8     children -> xml children
-Rule 9     children -> empty
-Rule 10    words -> ID words
-Rule 11    words -> empty
-Rule 12    empty -> <empty>
+Rule 2     xml -> opentag children words closetag
+Rule 3     xml -> alonetag words
+Rule 4     opentag -> START attributes GT
+Rule 5     closetag -> END
+Rule 6     alonetag -> START attributes GTS
+Rule 7     attributes -> ID EQUAL VALUE attributes
+Rule 8     attributes -> empty
+Rule 9     children -> xml children
+Rule 10    children -> empty
+Rule 11    words -> ID words
+Rule 12    words -> empty
+Rule 13    empty -> <empty>
 
 Terminals, with rules where they appear
 
-END                  : 4
-EQUAL                : 6
-GT                   : 3
-GTS                  : 5
-ID                   : 6 10
-START                : 3 5
+END                  : 5
+EQUAL                : 7
+GT                   : 4
+GTS                  : 6
+ID                   : 7 11
+START                : 4 6
 TAG                  : 
-VALUE                : 6
+VALUE                : 7
 WORDS                : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-alonetag             : 2
-attributes           : 3 5 6
-children             : 1 8
-closetag             : 1
-empty                : 7 9 11
-opentag              : 1
-words                : 1 2 10
-xml                  : 8 0
+alonetag             : 3
+attributes           : 4 6 7
+children             : 1 2 9
+closetag             : 1 2
+empty                : 8 10 12
+opentag              : 1 2
+words                : 1 2 3 11
+xml                  : 9 0
 
 Parsing method: LALR
 
@@ -51,257 +52,345 @@ state 0
 
     (0) S' -> . xml
     (1) xml -> . opentag words children closetag
-    (2) xml -> . alonetag words
-    (3) opentag -> . START attributes GT
-    (5) alonetag -> . START attributes GTS
+    (2) xml -> . opentag children words closetag
+    (3) xml -> . alonetag words
+    (4) opentag -> . START attributes GT
+    (6) alonetag -> . START attributes GTS
 
-    START           shift and go to state 2
+    START           shift and go to state 4
 
-    alonetag                       shift and go to state 1
+    xml                            shift and go to state 1
+    alonetag                       shift and go to state 2
     opentag                        shift and go to state 3
-    xml                            shift and go to state 4
 
 state 1
-
-    (2) xml -> alonetag . words
-    (10) words -> . ID words
-    (11) words -> . empty
-    (12) empty -> .
-
-    ID              shift and go to state 7
-    $end            reduce using rule 12 (empty -> .)
-    START           reduce using rule 12 (empty -> .)
-    END             reduce using rule 12 (empty -> .)
-
-    words                          shift and go to state 5
-    empty                          shift and go to state 6
-
-state 2
-
-    (3) opentag -> START . attributes GT
-    (5) alonetag -> START . attributes GTS
-    (6) attributes -> . ID EQUAL VALUE attributes
-    (7) attributes -> . empty
-    (12) empty -> .
-
-    ID              shift and go to state 10
-    GT              reduce using rule 12 (empty -> .)
-    GTS             reduce using rule 12 (empty -> .)
-
-    attributes                     shift and go to state 9
-    empty                          shift and go to state 8
-
-state 3
-
-    (1) xml -> opentag . words children closetag
-    (10) words -> . ID words
-    (11) words -> . empty
-    (12) empty -> .
-
-    ID              shift and go to state 7
-    START           reduce using rule 12 (empty -> .)
-    END             reduce using rule 12 (empty -> .)
-
-    words                          shift and go to state 11
-    empty                          shift and go to state 6
-
-state 4
 
     (0) S' -> xml .
 
 
 
+state 2
+
+    (3) xml -> alonetag . words
+    (11) words -> . ID words
+    (12) words -> . empty
+    (13) empty -> .
+
+  ! shift/reduce conflict for ID resolved as shift
+    ID              shift and go to state 6
+    $end            reduce using rule 13 (empty -> .)
+    START           reduce using rule 13 (empty -> .)
+    END             reduce using rule 13 (empty -> .)
+
+  ! ID              [ reduce using rule 13 (empty -> .) ]
+
+    words                          shift and go to state 5
+    empty                          shift and go to state 7
+
+state 3
+
+    (1) xml -> opentag . words children closetag
+    (2) xml -> opentag . children words closetag
+    (11) words -> . ID words
+    (12) words -> . empty
+    (9) children -> . xml children
+    (10) children -> . empty
+    (13) empty -> .
+    (1) xml -> . opentag words children closetag
+    (2) xml -> . opentag children words closetag
+    (3) xml -> . alonetag words
+    (4) opentag -> . START attributes GT
+    (6) alonetag -> . START attributes GTS
+
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for START resolved as shift
+    ID              shift and go to state 6
+    END             reduce using rule 13 (empty -> .)
+    START           shift and go to state 4
+
+  ! START           [ reduce using rule 13 (empty -> .) ]
+  ! ID              [ reduce using rule 13 (empty -> .) ]
+
+    xml                            shift and go to state 9
+    empty                          shift and go to state 8
+    children                       shift and go to state 11
+    words                          shift and go to state 10
+    alonetag                       shift and go to state 2
+    opentag                        shift and go to state 3
+
+state 4
+
+    (4) opentag -> START . attributes GT
+    (6) alonetag -> START . attributes GTS
+    (7) attributes -> . ID EQUAL VALUE attributes
+    (8) attributes -> . empty
+    (13) empty -> .
+
+    ID              shift and go to state 14
+    GT              reduce using rule 13 (empty -> .)
+    GTS             reduce using rule 13 (empty -> .)
+
+    attributes                     shift and go to state 13
+    empty                          shift and go to state 12
+
 state 5
 
-    (2) xml -> alonetag words .
+    (3) xml -> alonetag words .
 
-    START           reduce using rule 2 (xml -> alonetag words .)
-    END             reduce using rule 2 (xml -> alonetag words .)
-    $end            reduce using rule 2 (xml -> alonetag words .)
+    START           reduce using rule 3 (xml -> alonetag words .)
+    END             reduce using rule 3 (xml -> alonetag words .)
+    ID              reduce using rule 3 (xml -> alonetag words .)
+    $end            reduce using rule 3 (xml -> alonetag words .)
 
 
 state 6
 
-    (11) words -> empty .
+    (11) words -> ID . words
+    (11) words -> . ID words
+    (12) words -> . empty
+    (13) empty -> .
 
-    START           reduce using rule 11 (words -> empty .)
-    END             reduce using rule 11 (words -> empty .)
-    $end            reduce using rule 11 (words -> empty .)
+  ! shift/reduce conflict for ID resolved as shift
+    ID              shift and go to state 6
+    $end            reduce using rule 13 (empty -> .)
+    START           reduce using rule 13 (empty -> .)
+    END             reduce using rule 13 (empty -> .)
 
+  ! ID              [ reduce using rule 13 (empty -> .) ]
+
+    words                          shift and go to state 15
+    empty                          shift and go to state 7
 
 state 7
 
-    (10) words -> ID . words
-    (10) words -> . ID words
-    (11) words -> . empty
-    (12) empty -> .
+    (12) words -> empty .
 
-    ID              shift and go to state 7
-    $end            reduce using rule 12 (empty -> .)
-    START           reduce using rule 12 (empty -> .)
-    END             reduce using rule 12 (empty -> .)
+    END             reduce using rule 12 (words -> empty .)
+    $end            reduce using rule 12 (words -> empty .)
+    START           reduce using rule 12 (words -> empty .)
+    ID              reduce using rule 12 (words -> empty .)
 
-    words                          shift and go to state 12
-    empty                          shift and go to state 6
 
 state 8
 
-    (7) attributes -> empty .
+    (12) words -> empty .
+    (10) children -> empty .
 
-    GT              reduce using rule 7 (attributes -> empty .)
-    GTS             reduce using rule 7 (attributes -> empty .)
+  ! reduce/reduce conflict for END resolved using rule 10 (children -> empty .)
+    START           reduce using rule 12 (words -> empty .)
+    ID              reduce using rule 10 (children -> empty .)
+    END             reduce using rule 10 (children -> empty .)
+
+  ! END             [ reduce using rule 12 (words -> empty .) ]
 
 
 state 9
 
-    (3) opentag -> START attributes . GT
-    (5) alonetag -> START attributes . GTS
+    (9) children -> xml . children
+    (9) children -> . xml children
+    (10) children -> . empty
+    (1) xml -> . opentag words children closetag
+    (2) xml -> . opentag children words closetag
+    (3) xml -> . alonetag words
+    (13) empty -> .
+    (4) opentag -> . START attributes GT
+    (6) alonetag -> . START attributes GTS
 
-    GT              shift and go to state 14
-    GTS             shift and go to state 13
+    ID              reduce using rule 13 (empty -> .)
+    END             reduce using rule 13 (empty -> .)
+    START           shift and go to state 4
 
+    empty                          shift and go to state 16
+    children                       shift and go to state 17
+    xml                            shift and go to state 9
+    alonetag                       shift and go to state 2
+    opentag                        shift and go to state 3
 
 state 10
 
-    (6) attributes -> ID . EQUAL VALUE attributes
+    (1) xml -> opentag words . children closetag
+    (9) children -> . xml children
+    (10) children -> . empty
+    (1) xml -> . opentag words children closetag
+    (2) xml -> . opentag children words closetag
+    (3) xml -> . alonetag words
+    (13) empty -> .
+    (4) opentag -> . START attributes GT
+    (6) alonetag -> . START attributes GTS
 
-    EQUAL           shift and go to state 15
+    END             reduce using rule 13 (empty -> .)
+    START           shift and go to state 4
 
+    xml                            shift and go to state 9
+    empty                          shift and go to state 16
+    children                       shift and go to state 18
+    alonetag                       shift and go to state 2
+    opentag                        shift and go to state 3
 
 state 11
 
-    (1) xml -> opentag words . children closetag
-    (8) children -> . xml children
-    (9) children -> . empty
-    (1) xml -> . opentag words children closetag
-    (2) xml -> . alonetag words
-    (12) empty -> .
-    (3) opentag -> . START attributes GT
-    (5) alonetag -> . START attributes GTS
+    (2) xml -> opentag children . words closetag
+    (11) words -> . ID words
+    (12) words -> . empty
+    (13) empty -> .
 
-    END             reduce using rule 12 (empty -> .)
-    START           shift and go to state 2
+    ID              shift and go to state 6
+    END             reduce using rule 13 (empty -> .)
 
-    alonetag                       shift and go to state 1
-    empty                          shift and go to state 16
-    children                       shift and go to state 17
-    opentag                        shift and go to state 3
-    xml                            shift and go to state 18
+    words                          shift and go to state 19
+    empty                          shift and go to state 7
 
 state 12
 
-    (10) words -> ID words .
+    (8) attributes -> empty .
 
-    START           reduce using rule 10 (words -> ID words .)
-    END             reduce using rule 10 (words -> ID words .)
-    $end            reduce using rule 10 (words -> ID words .)
+    GT              reduce using rule 8 (attributes -> empty .)
+    GTS             reduce using rule 8 (attributes -> empty .)
 
 
 state 13
 
-    (5) alonetag -> START attributes GTS .
+    (4) opentag -> START attributes . GT
+    (6) alonetag -> START attributes . GTS
 
-    ID              reduce using rule 5 (alonetag -> START attributes GTS .)
-    START           reduce using rule 5 (alonetag -> START attributes GTS .)
-    END             reduce using rule 5 (alonetag -> START attributes GTS .)
-    $end            reduce using rule 5 (alonetag -> START attributes GTS .)
+    GT              shift and go to state 21
+    GTS             shift and go to state 20
 
 
 state 14
 
-    (3) opentag -> START attributes GT .
+    (7) attributes -> ID . EQUAL VALUE attributes
 
-    ID              reduce using rule 3 (opentag -> START attributes GT .)
-    START           reduce using rule 3 (opentag -> START attributes GT .)
-    END             reduce using rule 3 (opentag -> START attributes GT .)
+    EQUAL           shift and go to state 22
 
 
 state 15
 
-    (6) attributes -> ID EQUAL . VALUE attributes
+    (11) words -> ID words .
 
-    VALUE           shift and go to state 19
+    END             reduce using rule 11 (words -> ID words .)
+    $end            reduce using rule 11 (words -> ID words .)
+    START           reduce using rule 11 (words -> ID words .)
+    ID              reduce using rule 11 (words -> ID words .)
 
 
 state 16
 
-    (9) children -> empty .
+    (10) children -> empty .
 
-    END             reduce using rule 9 (children -> empty .)
+    END             reduce using rule 10 (children -> empty .)
+    ID              reduce using rule 10 (children -> empty .)
 
 
 state 17
 
-    (1) xml -> opentag words children . closetag
-    (4) closetag -> . END
+    (9) children -> xml children .
 
-    END             shift and go to state 20
+    ID              reduce using rule 9 (children -> xml children .)
+    END             reduce using rule 9 (children -> xml children .)
 
-    closetag                       shift and go to state 21
 
 state 18
 
-    (8) children -> xml . children
-    (8) children -> . xml children
-    (9) children -> . empty
-    (1) xml -> . opentag words children closetag
-    (2) xml -> . alonetag words
-    (12) empty -> .
-    (3) opentag -> . START attributes GT
-    (5) alonetag -> . START attributes GTS
+    (1) xml -> opentag words children . closetag
+    (5) closetag -> . END
 
-    END             reduce using rule 12 (empty -> .)
-    START           shift and go to state 2
+    END             shift and go to state 24
 
-    alonetag                       shift and go to state 1
-    empty                          shift and go to state 16
-    children                       shift and go to state 22
-    opentag                        shift and go to state 3
-    xml                            shift and go to state 18
+    closetag                       shift and go to state 23
 
 state 19
 
-    (6) attributes -> ID EQUAL VALUE . attributes
-    (6) attributes -> . ID EQUAL VALUE attributes
-    (7) attributes -> . empty
-    (12) empty -> .
+    (2) xml -> opentag children words . closetag
+    (5) closetag -> . END
 
-    ID              shift and go to state 10
-    GT              reduce using rule 12 (empty -> .)
-    GTS             reduce using rule 12 (empty -> .)
+    END             shift and go to state 24
 
-    attributes                     shift and go to state 23
-    empty                          shift and go to state 8
+    closetag                       shift and go to state 25
 
 state 20
 
-    (4) closetag -> END .
+    (6) alonetag -> START attributes GTS .
 
-    $end            reduce using rule 4 (closetag -> END .)
-    START           reduce using rule 4 (closetag -> END .)
-    END             reduce using rule 4 (closetag -> END .)
+    ID              reduce using rule 6 (alonetag -> START attributes GTS .)
+    $end            reduce using rule 6 (alonetag -> START attributes GTS .)
+    START           reduce using rule 6 (alonetag -> START attributes GTS .)
+    END             reduce using rule 6 (alonetag -> START attributes GTS .)
 
 
 state 21
+
+    (4) opentag -> START attributes GT .
+
+    ID              reduce using rule 4 (opentag -> START attributes GT .)
+    START           reduce using rule 4 (opentag -> START attributes GT .)
+    END             reduce using rule 4 (opentag -> START attributes GT .)
+
+
+state 22
+
+    (7) attributes -> ID EQUAL . VALUE attributes
+
+    VALUE           shift and go to state 26
+
+
+state 23
 
     (1) xml -> opentag words children closetag .
 
     START           reduce using rule 1 (xml -> opentag words children closetag .)
     END             reduce using rule 1 (xml -> opentag words children closetag .)
+    ID              reduce using rule 1 (xml -> opentag words children closetag .)
     $end            reduce using rule 1 (xml -> opentag words children closetag .)
 
 
-state 22
+state 24
 
-    (8) children -> xml children .
+    (5) closetag -> END .
 
-    END             reduce using rule 8 (children -> xml children .)
+    $end            reduce using rule 5 (closetag -> END .)
+    START           reduce using rule 5 (closetag -> END .)
+    ID              reduce using rule 5 (closetag -> END .)
+    END             reduce using rule 5 (closetag -> END .)
 
 
-state 23
+state 25
 
-    (6) attributes -> ID EQUAL VALUE attributes .
+    (2) xml -> opentag children words closetag .
 
-    GT              reduce using rule 6 (attributes -> ID EQUAL VALUE attributes .)
-    GTS             reduce using rule 6 (attributes -> ID EQUAL VALUE attributes .)
+    START           reduce using rule 2 (xml -> opentag children words closetag .)
+    END             reduce using rule 2 (xml -> opentag children words closetag .)
+    ID              reduce using rule 2 (xml -> opentag children words closetag .)
+    $end            reduce using rule 2 (xml -> opentag children words closetag .)
 
+
+state 26
+
+    (7) attributes -> ID EQUAL VALUE . attributes
+    (7) attributes -> . ID EQUAL VALUE attributes
+    (8) attributes -> . empty
+    (13) empty -> .
+
+    ID              shift and go to state 14
+    GT              reduce using rule 13 (empty -> .)
+    GTS             reduce using rule 13 (empty -> .)
+
+    attributes                     shift and go to state 27
+    empty                          shift and go to state 12
+
+state 27
+
+    (7) attributes -> ID EQUAL VALUE attributes .
+
+    GT              reduce using rule 7 (attributes -> ID EQUAL VALUE attributes .)
+    GTS             reduce using rule 7 (attributes -> ID EQUAL VALUE attributes .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for ID in state 2 resolved as shift
+WARNING: shift/reduce conflict for ID in state 3 resolved as shift
+WARNING: shift/reduce conflict for START in state 3 resolved as shift
+WARNING: shift/reduce conflict for ID in state 6 resolved as shift
+WARNING: reduce/reduce conflict in state 8 resolved using rule (children -> empty)
+WARNING: rejected rule (words -> empty) in state 8
