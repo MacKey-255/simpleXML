@@ -3,7 +3,7 @@ SimpleXML
 
 Analizador sintactico XML creado con PLY (LEX y YACC) en Python. Es capaz de analizar codigo XML
 y generar un DOM a partir del codigo. Utiliza la interfaz EEL para darle una mayor ventaja en la
-utilizacion de JavaScript.
+utilizacion de JavaScript. Este proyecto fue realizado para la asignatura de P4 en mi universidad.
 
 Responsabilidad
 ---------------
