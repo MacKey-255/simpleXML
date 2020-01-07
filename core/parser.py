@@ -482,7 +482,7 @@ def _debug_print_(part, s):
 
 def main():
     # Test
-    test = '/home/mackey/PycharmProjects/simpleXML/test1.xml'
+    test = '/home/mackey/PycharmProjects/simpleXML/test.xml'
     fp = codecs.open(test, 'r', 'utf-8')
     read = fp.read()
     fp.close()

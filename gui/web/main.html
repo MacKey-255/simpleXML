@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>SimpleXML</title>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/animate.min.css">
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="icon" type="image/x-icon" href="icon.png">
+    </head>
+    <body>
+        <div class="container" style="padding: 10px">
+            <div>
+                <label for="form-code" class="title"><i class="fa fa-code"></i> <span>Codigo:</span></label>
+                <div class="input-group" style="margin-bottom: 10px">
+                    <textarea class="form-control" id="form-code" placeholder="Codigo Fuente"></textarea>
+                </div>
+                <label for="form-result" class="title"><i class="fa fa-info-circle"></i> <span>Resultado:</span></label>
+                <div class="input-group" style="margin-bottom: 10px">
+                    <textarea class="form-control" id="form-result" disabled></textarea>
+                </div>
+                <div class="input-group" style="margin-left: 5px">
+                    <button autofocus id="button-compile" class="btn btn-primary"><i class="fa fa-check fa-icon"></i> Compilar</button>
+                    <button type="button" data-toggle="modal" class="btn btn-primary" data-target="#myModal"><i class="fa fa-git fa-icon"></i>Ver DOM</button>
+                    <button id="button-clear" class="btn btn-primary"><i class="fa fa-share fa-icon"></i> Limpiar</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="width: calc(100% - 40px); margin: auto; height: 500px" class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" style="color: black;">DOM</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              </div>
+              <div class="modal-body"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- JavaScript -->
+        <script type="text/javascript" src="/jquery.min.js"></script>
+        <script type="text/javascript" src="/popper.js"></script>
+        <script type="text/javascript" src="/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript" src="/d3.min.js"></script>
+        <script type="text/javascript" src="/app.js"></script>
+        <script type="text/javascript">
+            $('.tooltips').tooltip();
+            // Prevent resize
+            var size = [480, 520];
+            $(window).resize(function(){
+                window.resizeTo(size[0], size[1]);
+            });
+            // Load default code
+            $("#form-code")[0].value = "<x main=\"True\">\n" +
+                "    </b>asdasd\n" +
+                "    <xml data=\"single\">\n" +
+                "       co </b>\n" +
+                "        <p>\n" +
+                "        <k></k>\n" +
+                "        <aps />\n" +
+                "        <a>Hola\n" +
+                "    </xml>\n" +
+                "</x>";
+        </script>
+    </body>
+</html>
