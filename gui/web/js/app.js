@@ -1,3 +1,10 @@
+// Declare editor
+var editor = ace.edit("form-code");
+editor.setOptions({
+  fontSize: "12pt"
+});
+editor.getSession().setMode("ace/mode/xml");
+
 // Funcions Async
 async function compile(code, show_lexer) {
     let result = await eel.parser_coding(code, show_lexer)();
@@ -163,14 +170,23 @@ function click(d) {
 $('#button-compile').click(function (e) {
     e.preventDefault();
     // Get cuota and user data
-    compile($('#form-code')[0].value, false);
+    compile(editor.getValue(), false);
+});
+
+$('#button-style').click(function (e) {
+    e.preventDefault();
+    if(editor.getTheme() === "ace/theme/monokai") {
+		editor.setTheme(null);
+	} else {
+    	editor.setTheme("ace/theme/monokai");
+	}
 });
 
 $('#button-clear').click(function (e) {
     e.preventDefault();
     // Clear all
     $('#form-result')[0].value = '';
-    $('#form-code')[0].value = '';
+    editor.setValue('');
     root = [];
     root.x0 = height / 2;
     root.y0 = 0;

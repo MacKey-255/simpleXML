@@ -2,15 +2,14 @@ import ply.lex as lex
 
 # List Tokens
 tokens = (
-    'TAG',
-    'START',
-    'END',
-    'ID',
     'WORDS',
+    'ID',
     'VALUE',
     'EQUAL',
     'GTS',
     'GT',
+    'LTS',
+    'LT',
 )
 
 states = (
@@ -21,38 +20,33 @@ states = (
 t_ignore = ' \t\n'
 
 # Tokens
-t_WORDS = r'[a-zA-Z_][a-zA-Z0-9_]*'
+t_WORDS = r'[a-zA-Z0-9_]+'
 t_TAG_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 t_TAG_EQUAL = r'='
-t_TAG_GTS = r'/>'
-t_TAG_GT = r'>'
 t_TAG_ignore = " \t\n"
 
 
-def t_TAG(t):
-    r'<[a-zA-Z_][a-zA-Z0-9_]*'
-    t.value = t.value[1:]
-    t.type = 'START'
-    t.lexer.code_start = t.lexer.lexpos
-    t.lexer.level = 1
-    t.lexer.begin('TAG')
+def t_LTS(t):
+    r'</'
+    t.lexer.push_state('TAG')
     return t
 
 
-def t_TAG_START(t):
-    r'<[a-zA-Z_][a-zA-Z0-9_]*'
-    t.value = t.value[1:]
-    t.lexer.level += 1
+def t_LT(t):
+    r'<'
+    t.lexer.push_state('TAG')
     return t
 
 
-def t_TAG_END(t):
-    r'</[a-zA-Z_][a-zA-Z0-9_]*>'
-    t.value = t.value[2:-1]
-    t.lexer.level -= 1
-    # Closing Condition
-    if t.lexer.level == 0:
-        t.lexer.begin('INITIAL')
+def t_TAG_GT(t):
+    r'>'
+    t.lexer.pop_state()
+    return t
+
+
+def t_TAG_GTS(t):
+    r'/>'
+    t.lexer.pop_state()
     return t
 
 
@@ -61,7 +55,7 @@ def t_TAG_error(t):
 
 
 def t_TAG_VALUE(t):
-    r'"[^"]*"'
+    r'"[^"]*"|\'[^"]*\''
     t.value = t.value[1:-1]  # dropping off the double quotes
     return t
 

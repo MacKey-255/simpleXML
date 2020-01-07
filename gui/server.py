@@ -6,12 +6,12 @@ import eel
 ###############
 dom = None
 
+
 ########################
 # Functions Expose eel #
 ########################
 @eel.expose
 def parser_coding(code=None, show_lexer=False):
-    print(code)
     if code is None or code == '':
         return 'Not Code :('
     # Load Data
@@ -25,7 +25,6 @@ def parser_coding(code=None, show_lexer=False):
         token = analyzer.token()
         if not token:
             break
-        print(token)
         if show_lexer:
             result += '{0} \n'.format(token)
     # Parser

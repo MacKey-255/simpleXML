@@ -1,11 +1,13 @@
 from ply import yacc
+from core.dom import DOM
 from core.lexer import tokens
 
 # Precedence rules for the arithmetic operators
-precedence = ()
-
-# dictionary of names (for storing variables)
-names = {}
+precedence = (
+    ('left', 'WORDS'),
+    ('right', 'ID', 'EQUAL', 'VALUE'),
+    ('left', 'LT', 'LTS', 'GT', 'GTS'),
+)
 
 # Stack of the Tags
 start_tag_stack = []
@@ -15,89 +17,90 @@ end_tag_stack = []
 errors = []
 
 
-def log_get(p):
-    if p[1] is not None:
-        result = ()
-        for o in p:
-            result += (o,)
-        return result
-    else:
-        return None
-
-
 def p_xml(p):
     #  p[0    p[1]    p[2]   p[3]     p[4]
-    '''xml : opentag words children closetag
-           | opentag children words closetag
-           | alonetag words'''
+    """xml : opentag children words closetag
+           | opentag words children closetag
+           | alonetag words"""
     if len(p) == 5:
-        p[0] = {p[4]: p[1]}
-        if p[3] is not None:
-            p[0].update(p[3])
-        names[p[4]] = p[1]
-        if p[2] is not None:
-            if names[p[4]] is not None:
-                names[p[4]].update({'@text': p[2]})
-            else:
-                names[p[4]] = {'@text': p[2]}
+        if type(p[2]) == list:
+            p[1].children = p[2]
+            p[1].text = p[3]
+        else:
+            p[1].children = p[3]
+            p[1].text = p[2]
+    else:
+        p[1].text = p[2]
+    p[0] = p[1]
 
 
 def p_opentag(p):
-    '''opentag : START attributes GT'''
+    """opentag : LT ID attributes GT"""
     # Tag Start
-    start_tag_stack.append({p[1]: p.lexpos(1)})
-    p[0] = p[2]
+    start_tag_stack.append({p[2]: p.lexpos(1)})
+    p[0] = DOM.Element(p[2], p[3])
 
 
 def p_closetag(p):
-    '''closetag : END'''
+    """closetag : LTS ID GT"""
     n = start_tag_stack.pop()
-    p[0] = p[1]
-    if not p[1] in n:
-        # Add actual closetag
-        start_tag_stack.append(n)
+    p[0] = p[2]
+    if not p[2] in n:
+        start_tag_stack.append(n)  # Add actual closetag
         # Search start_tag for close_tag
         correct = False
         for i in reversed(range(0, len(start_tag_stack))):
-            if p[1] in start_tag_stack[i]:
+            if p[2] in start_tag_stack[i]:
                 correct = True
                 # Remove Tag Start
                 start_tag_stack.remove(start_tag_stack[i])
                 break
         if not correct:
             # Add Tag Close
-            end_tag_stack.append({p[1]: p.lexpos(1)})
+            end_tag_stack.append({p[2]: p.lexpos(1)})
 
 
 def p_alonetag(p):
-    '''alonetag : START attributes GTS'''
-    p[0] = {p[1]: p[2]}
-    names[p[1]] = p[2]
+    """alonetag : LT ID attributes GTS"""
+    p[0] = DOM.Element(p[2], p[3])
 
 
 def p_attributes(p):
-    '''attributes : ID EQUAL VALUE attributes
-               | empty'''
+    """attributes : ID EQUAL VALUE attributes
+               | empty"""
     if len(p) == 5:
         p[0] = {p[1]: p[3]}
         if p[4] is not None:
-            p[0].append(p[4])
+            p[0].update(p[4])
+    else:
+        p[0] = {}
 
 
 def p_children(p):
-    '''children : xml children
-            | empty'''
-    p[0] = p[1]
+    """children : xml children
+            | empty"""
+    if len(p) == 3:
+        if p[2]:
+            p[0] = [p[1]] + p[2]
+        else:
+            p[0] = [p[1]]
+    else:
+        p[0] = []
 
 
 def p_words(p):
-    '''words : ID words
-             | empty'''
-    p[0] = p[1]
+    """words : WORDS words
+             | empty"""
+    if len(p) == 3:
+        if p[2]:
+            p[1] += ' ' + p[2]
+        p[0] = p[1]
+    else:
+        p[0] = ''
 
 
 def p_empty(p):
-    '''empty :'''
+    """empty :"""
     pass
 
 
@@ -111,16 +114,17 @@ def p_error(p):
         elif p.type == 'ID':
             errors.append([p.lexpos, "Unexpected token '{0}'".format(p.value)])
         elif p.type == 'END':
-            errors.append([p.lexpos, "Wrong closing <{0}>".format(p.value)])
+            errors.append([p.lexpos, "Wrong closing </{0}>".format(p.value)])
+        elif p.type == 'LT':
+            errors.append([p.lexpos, "Multiple root tags"])
         else:
             errors.append([p.lexpos, "Syntax Error at {0} with token: '{1}'".format(p.value, p.type)])
 
 
-def alternative_error(error=None):
+def get_error(error=None):
     if error is None:
         error = errors
     # Extract Error
-    print(start_tag_stack, end_tag_stack)
     if start_tag_stack:
         for tag in start_tag_stack:
             error.append([tag[[o for o in tag][0]], "Syntax error at starting <{0}>".format([o for o in tag][0])])

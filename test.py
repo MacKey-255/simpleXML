@@ -1,9 +1,9 @@
 from core.lexer import analyzer
-#from core.sintatic import parser, get_error
+from core.sintatic import parser, get_error
 import codecs
 
 # Config
-show = True
+show = False
 errors = []
 
 error = '/home/mackey/PycharmProjects/simpleXML/test.xml'
@@ -20,7 +20,6 @@ while True:
         break
     if show:
         print(token)
-exit(1)
 result = parser.parse(text, tracking=True)
 errors = get_error()
 

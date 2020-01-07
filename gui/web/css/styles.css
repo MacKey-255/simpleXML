@@ -53,6 +53,7 @@ body {
 }
 
 #form-code {
+    width: 100%;
     min-height: 240px;
 }
 
